@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>College Wishlist - Instant photo film galerie</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Caveat");
+
+    body {
+      margin: 0;
+      font-family: 'Caveat', serif;
+      overflow: hidden;
+      background: url('https://assets.onecompiler.app/4377t5cta/4377uekuu/1000128913.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .zoom-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1.7);
+      transform-origin: center;
+    }
+
+    .Container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+    }
+
+    .Picture {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: 5px solid #fff;
+      border-radius: 3px;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      transform: translate(-50%, -50%);
+      user-select: none;
+      cursor: grab;
+      width: 500px;  /* Increased card size */
+      height: 600px; /* Increased card size */
+    }
+
+    .Picture-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures the image/video covers the whole card */
+      pointer-events: none;
+    }
+
+    /* Smooth transition for the specific video card */
+    #smooth-card {
+      transition: transform 0.1s ease-out, left 0.1s ease-out, top 0.1s ease-out;
+    }
+
+    .yes-no-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, .3);
+      border-radius: 3px;
+    }
+
+    .yes-no-overlay p {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .yes-no-overlay button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .yes-btn {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .no-btn {
+      background-color: #f44336;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="zoom-container">
+    <div class="Container">
+      
+      <div class="Picture" id="smooth-card">
+        <video class="Picture-img" autoplay loop muted controls>
+          <source src="v1.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        <div class="yes-no-overlay">
+          <p>𝙷𝙰𝙿𝙿𝚈  𝙹𝙴𝙽𝙸𝙲𝙷𝙰-DAY👀</p>
+          <button class="yes-btn" onclick="sendMessage('KOZHAPAM ILLYA🙃🫠')">KOZHAPAM ILLYA🙃🫠</button>
+          <button class="no-btn" onclick="sendMessage('PATTULA😤🚶🏻‍♀️')">PATTULA😤🚶🏻‍♀️</button>
+        </div>
+      </div>
+
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/42tmq6jud/3ww47radw/1000111021.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/4377t5cta/4377uekuu/1000128894.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/4377t5cta/4377t5p2n/1000128888.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/42tmq6jud/4377p8nyb/1000128873.jpg" alt="" />
+      </div>
+    </div>
+  
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/42tmq6jud/3ww47radw/1000111021.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/4377t5cta/3ww47radw/1000129050.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/4377t5cta/3ww47radw/1000129043.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/4377t5cta/3ww47radw/1000129014.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/4377t5cta/3ww47radw/1000129032.jpg" alt="" />
+      </div>
+      <div class="Picture">
+        <img class="Picture-img" src="https://assets.onecompiler.app/4377t5cta/3ww47radw/1000129021.jpg" alt="" />
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+    const pictures = document.querySelectorAll('.Picture');
+    const smoothCard = document.getElementById('smooth-card');
+    let previousTouch;
+
+    // Function to update position smoothly
+    function updateSmoothElementPosition(element, event) {
+      let movementX, movementY;
+
+      if (event.type === 'touchmove') {
+        const touch = event.touches[0];
+        movementX = previousTouch ? touch.clientX - previousTouch.clientX : 0;
+        movementY = previousTouch ? touch.clientY - previousTouch.clientY : 0;
+        previousTouch = touch;
+      } else {
+        movementX = event.movementX;
+        movementY = event.movementY;
+      }
+
+      const elementY = parseInt(element.style.top || 0) + movementY;
+      const elementX = parseInt(element.style.left || 0) + movementX;
+
+      element.style.top = elementY + 'px';
+      element.style.left = elementX + 'px';
+    }
+
+    function startDragSmooth(element, event) {
+      const updateFunction = (event) => updateSmoothElementPosition(element, event);
+      const stopFunction = () => stopDrag(updateFunction, stopFunction);
+
+      document.addEventListener('mousemove', updateFunction);
+      document.addEventListener('touchmove', updateFunction);
+      document.addEventListener('mouseup', stopFunction);
+      document.addEventListener('touchend', stopFunction);
+    }
+
+    function stopDrag(updateFunction, stopFunction) {
+      previousTouch = undefined;
+      document.removeEventListener('mousemove', updateFunction);
+      document.removeEventListener('touchmove', updateFunction);
+      document.removeEventListener('mouseup', stopFunction);
+      document.removeEventListener('touchend', stopFunction);
+    }
+
+    smoothCard.addEventListener('mousedown', (event) => startDragSmooth(smoothCard, event));
+    smoothCard.addEventListener('touchstart', (event) => {
+      previousTouch = event.touches[0];
+      startDragSmooth(smoothCard, event);
+    });
+
+    // Randomize position for all images except smooth card
+    pictures.forEach(picture => {
+      if (picture !== smoothCard) {
+        const range = 100;
+        const randomX = Math.random() * (range * 2) - range;
+        const randomY = Math.random() * (range * 2) - range;
+        const randomRotate = Math.random() * (range / 2) - range / 4;
+        picture.style.top = `${randomY}px`;
+        picture.style.left = `${randomX}px`;
+        picture.style.transform = `translate(-50%, -50%) rotate(${randomRotate}deg)`;
+
+        picture.addEventListener('mousedown', (event) => startDragSmooth(picture, event));
+        picture.addEventListener('touchstart', (event) => {
+          previousTouch = event.touches[0];
+          startDragSmooth(picture, event);
+        });
+      }
+    });
+
+    function sendMessage(response) {
+      const email = "praveenpanangadan07@gmail.com";
+      const subject = ":)";
+      const body = `:) ${response}`;
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    window.onload = function() {
+      const video = document.querySelector('#smooth-card video');
+      video.muted = false;
+      video.play().catch(() => {
+        video.muted = true;
+        video.play();
+      });
+    };
+  </script>
+</body>
+          </html>
