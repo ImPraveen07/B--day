@@ -2,6 +2,7 @@
 <head>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>College Wishlist - Instant photo film galerie</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Caveat");
@@ -10,25 +11,30 @@
       margin: 0;
       font-family: 'Caveat', serif;
       overflow: hidden;
-      background: url('https://assets.onecompiler.app/4377t5cta/4377uekuu/1000128913.jpg') no-repeat center center fixed;
+      background: url('bg.jpeg') no-repeat center center fixed;
       background-size: cover;
+      overscroll-behavior: none;
     }
 
     .zoom-container {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(4.7);
+      transform: translate(-50%, -50%) scale(1.05); /* Default Desktop Scale */
       transform-origin: center;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none; /* Let clicks pass through to container, but re-enable on children */
     }
 
     .Container {
       position: absolute;
       top: 0;
       left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
     }
-
-  
 
     .yes-no-overlay {
       position: absolute;
@@ -44,64 +50,63 @@
       border-radius: 3px;
     }
 
-  .Picture1 {
-    display: inline-block;
-    position: absolute;
-    top: 100;
-    left: 0;
-    border: 5px solid #fff;
-    border-radius: 3px;
-    background: #fff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    transform: translate(-50%, -50%);
-    user-select: none;
-    cursor: grab;
-    width: 800px;  /* Reduced card size */
-    height: 900px; /* Reduced card size */
-    will-change: transform, top, left;
-    transition: transform 0.1s ease-out; /* Smooth transition */
-  }
+    .Picture1 {
+      display: inline-block;
+      position: absolute;
+      top: 100px;
+      left: 0;
+      border: 5px solid #fff;
+      border-radius: 3px;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      transform: translate(-50%, -50%);
+      user-select: none;
+      cursor: grab;
+      width: 800px;
+      height: 900px;
+      will-change: transform, top, left;
+      transition: transform 0.1s ease-out;
+      touch-action: none; 
+    }
 
-  .Picture {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border: 5px solid #fff;
-    border-radius: 3px;
-    background: #fff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    transform: translate(-50%, -50%);
-    user-select: none;
-    cursor: grab;
-    width: 600px;  /* Reduced card size */
-    height: 700px; /* Reduced card size */
-    will-change: transform, top, left;
-    transition: transform 0.1s ease-out; /* Smooth transition */
-  }
+    .Picture {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: 5px solid #fff;
+      border-radius: 3px;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      transform: translate(-50%, -50%);
+      user-select: none;
+      cursor: grab;
+      width: 600px;
+      height: 700px;
+      will-change: transform, top, left;
+      transition: transform 0.1s ease-out;
+      touch-action: none; 
+    }
 
-  /* Adjusted smooth card size */
-  #smooth-card {
-    width: 350px;  /* Slightly smaller to reduce load */
-    height: 470px; /* Slightly smaller to reduce load */
-    transition: transform 0.1s ease-out, left 0.1s ease-out, top 0.1s ease-out;
-  }
+    #smooth-card {
+      width: 350px;
+      height: 470px;
+      transition: transform 0.1s ease-out, left 0.1s ease-out, top 0.1s ease-out;
+    }
 
-  .Picture-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
-  }
-
-  .zoom-container {
-    transform: translate(-50%, -50%) scale(1.05); /* Slight zoom-out effect */
-  }
+    .Picture-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
 
     .yes-no-overlay p {
       font-size: 1.2rem;
       margin-bottom: 10px;
+      text-align: center;
+      padding: 0 10px;
     }
 
     .yes-no-overlay button {
@@ -122,6 +127,25 @@
       background-color: #f44336;
       color: white;
     }
+
+    /* --- RESPONSIVE MOBILE SETTINGS --- */
+    @media (max-width: 768px) {
+      .zoom-container {
+        /* Scale down the whole view on mobile so it fits the screen */
+        transform: translate(-50%, -50%) scale(0.85); 
+      }
+
+      /* Force background pictures to be smaller on mobile so they don't look zoomed in */
+      .Picture:not(#smooth-card) {
+        width: 320px !important;
+        height: 400px !important;
+      }
+      
+      .Picture1 {
+        width: 340px !important;
+        height: 420px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -129,120 +153,135 @@
     <div class="Container">
       
       <div class="Picture" id="smooth-card">
-  <video class="Picture-img" autoplay loop muted controls playbackRate="1">
-  <source src="v1.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+        <video class="Picture-img" autoplay loop muted controls playbackRate="1">
+          <source src="v1.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
 
         <div class="yes-no-overlay">
-          <p>𝙷𝙰𝙿𝙿𝚈  𝙹𝙴𝙽𝙸𝙲𝙷𝙰-DAY💩👀</p>
-   <button class="no-btn" onclick="sendMessage('edaa eyy endha ene manasilkathe..anode ethra pravshyam paranje..no enn..ey endhan manasilkathe..ink anode samsarikan thalparyam illa..ink rln thane istam alla.ink free ayi nadakanam..life oke enjoy cheyth.onu manasilaki kode ank..inji ithum paranj vararuth-instagram user 🙂👍🏻')">NOoooooo🚶🏻‍♀️</button>
-                    <button class="yes-btn" onclick="sendMessage('enk araya..nee enthAylum matteth click akitt indavuka.sherikum nee ann paranja timil njn vann samsaeicha mathyarnu.njn ippalenkil a preshnam melle mattan nokunud.wnik arayule nighal oke ene kanunath adhikam samsaeikatha oru..person ayittavum..but enik close ayavarod samsarikan istam.enim urapan nee orikalum clixk akiyal thane athore curiosity kondakum..sherikum njn ninte banghi kandindonum alla attrate aye ink arayul..ink personality an istaya..njn epolum anode samsarikaum ane kananum nokarind but athonum nee arinjitila..but nine kanikan vendi thanne an kure ulla reels oke story aki ittath but.apolenkilum avasta manasilkumalo orthit..pine after kurach yr kayinjitan ath ninkoru shalyapole ann manasilaye.athupole..ink areyum personality kurachoke manasilakam kazhiyum..inkaara ank inghane kure friendskale oppam nalom adich polich kore stalam kand anghane oken an istam.ippam ulla love fake an ank athukond ante life spoil avum enula pedi chelapam indavam.atleast ne yonum introverts edhelum shortfilm alell personality endhan enkilum search akarnu...ink ettavum antedthu veshmam ayath..last samsarichapo arelum kode venam enn paranjathan..ank enode istam alla enn karuthi ane.onum njn verpikila..maximum ozhinj maram..btw inji kurach months kude ullu..njn ane shalya peduthane verunila..athupole ee ene pati chindikanad..atheyalum illa inkaraya..anyway ithonum nokila enn karuthi.. ink veruth tudanghin ee personality.time 1:36 am ayi.so typing mistake kanum..nink pine ith click akathond seene ila.. ---👾')">monday enkilum standilote..(jst onu veruthe,enik samsarikan kazhiyo nokkanan🧎🏻‍♂️)</button>
-       
-        </div>
+          <p>𝙷𝙰𝙿𝙿𝚈  𝙹𝙴𝙽𝙸𝙲H JEvicha 6,575 mathe-DAY💆🏻‍♂️🌠</p>
+          </div>
       </div>
-               <div class="Picture">
-      <img class="Picture-img" src="b.jpg" alt="" />
-    </div>
-     <div class="Picture">
+
+      <div class="Picture">
+        <img class="Picture-img" src="b.jpg" alt="" />
+      </div>
+      <div class="Picture">
         <img class="Picture-img" src="e.jpg" alt="" />
       </div>   
-     <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="c.jpg" alt="" />
       </div>
           
-     <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="d.jpg" alt="" />
       </div>
       <div class="Picture">
         <img class="Picture-img" src="f.jpg" alt="" />
       </div>
-     <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="h.jpg" alt="" />
       </div>
-    </div>  
-
-
-     <div class="Picture">
+    
+      <div class="Picture">
         <img class="Picture-img" src="o.jpg" alt="" />
       </div>
-<div class="Picture">
-      <img class="Picture-img" src="j.jpg" alt="" />
-    </div>
+      <div class="Picture">
+        <img class="Picture-img" src="j.jpg" alt="" />
+      </div>
 
-          <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="t.jpg" alt="" />
       </div>
 
-    <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="q.jpg" alt="" />
       </div>
                  
-            <div class="Picture">
-      <img class="Picture-img" src="r.jpg" alt="" />
-    </div>
-         <div class="Picture">
+      <div class="Picture">
+        <img class="Picture-img" src="r.jpg" alt="" />
+      </div>
+      <div class="Picture">
         <img class="Picture-img" src="s.jpg" alt="" />
       </div>
-          <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="i.jpg" alt="" />
       </div>
-    8   <div class="Picture">
+      
+      <div class="Picture">
         <img class="Picture-img" src="g.jpg" alt="" />
       </div>
-     <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="m.jpg" alt="" />
       </div>
-             <div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="a.jpg" alt="" />
       </div>
       <div class="Picture">
         <img class="Picture-img" src="n.jpg" alt="" />
       </div>
-<div class="Picture">
+      <div class="Picture">
         <img class="Picture-img" src="p.jpg" alt="" />
-</div>
-<div class="Picture">
+      </div>
+      <div class="Picture">
         <img class="Picture-img" src="y.jpg" alt="" />
-</div>
-    <div class="Picture">
+      </div>
+      <div class="Picture">
         <img class="Picture-img" src="l.jpg" alt="" />
-    </div>
+      </div>
     </div>
   </div>
-</div>
+
   <script>
     const pictures = document.querySelectorAll('.Picture');
     const smoothCard = document.getElementById('smooth-card');
     let previousTouch;
+    
+    // Helper function to get the current scale based on screen width
+    // This ensures dragging speed is correct on both Mobile (0.85) and Desktop (1.05)
+    function getScaleFactor() {
+      return window.innerWidth <= 768 ? 0.85 : 1.05;
+    }
 
     // Function to update position smoothly
     function updateSmoothElementPosition(element, event) {
+      // Prevent browser default behavior to stop zooming/scrolling
+      if(event.cancelable && event.type === 'touchmove') {
+          event.preventDefault(); 
+      }
+
       let movementX, movementY;
+      const currentScale = getScaleFactor();
 
       if (event.type === 'touchmove') {
         const touch = event.touches[0];
-        movementX = previousTouch ? touch.clientX - previousTouch.clientX : 0;
-        movementY = previousTouch ? touch.clientY - previousTouch.clientY : 0;
+        // Calculate difference and adjust by scaleFactor
+        movementX = (previousTouch ? touch.clientX - previousTouch.clientX : 0) / currentScale;
+        movementY = (previousTouch ? touch.clientY - previousTouch.clientY : 0) / currentScale;
         previousTouch = touch;
       } else {
-        movementX = event.movementX;
-        movementY = event.movementY;
+        // For mouse, we also adjust by scaleFactor
+        movementX = event.movementX / currentScale;
+        movementY = event.movementY / currentScale;
       }
 
-      const elementY = parseInt(element.style.top || 0) + movementY;
-      const elementX = parseInt(element.style.left || 0) + movementX;
+      const elementY = parseFloat(element.style.top || 0) + movementY;
+      const elementX = parseFloat(element.style.left || 0) + movementX;
 
       element.style.top = elementY + 'px';
       element.style.left = elementX + 'px';
     }
 
     function startDragSmooth(element, event) {
+      if(event.type === 'touchstart' && event.cancelable) {
+          event.preventDefault(); 
+      }
+      
       const updateFunction = (event) => updateSmoothElementPosition(element, event);
       const stopFunction = () => stopDrag(updateFunction, stopFunction);
 
       document.addEventListener('mousemove', updateFunction);
-      document.addEventListener('touchmove', updateFunction);
+      document.addEventListener('touchmove', updateFunction, { passive: false });
       document.addEventListener('mouseup', stopFunction);
       document.addEventListener('touchend', stopFunction);
     }
@@ -259,12 +298,15 @@
     smoothCard.addEventListener('touchstart', (event) => {
       previousTouch = event.touches[0];
       startDragSmooth(smoothCard, event);
-    });
+    }, { passive: false });
 
     // Randomize position for all images except smooth card
     pictures.forEach(picture => {
       if (picture !== smoothCard) {
-        const range = 100;
+        // Reduced random spread on mobile to keep items closer to center
+        const isMobile = window.innerWidth <= 768;
+        const range = isMobile ? 60 : 100; 
+        
         const randomX = Math.random() * (range * 2) - range;
         const randomY = Math.random() * (range * 2) - range;
         const randomRotate = Math.random() * (range / 2) - range / 4;
@@ -276,7 +318,7 @@
         picture.addEventListener('touchstart', (event) => {
           previousTouch = event.touches[0];
           startDragSmooth(picture, event);
-        });
+        }, { passive: false });
       }
     });
 
@@ -287,92 +329,93 @@
       window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
-window.onload = function() {
-  const video = document.querySelector('#smooth-card video');
-  video.muted = true;
-  video.play().catch(() => {
-    video.muted = true;
-    video.play();
-  });
-  video.playbackRate = 1; // Ensure normal speed
-};
-function checkBirthdayEffect() {
-    if (movedCards >= maxMoves) {
-        triggerBirthdayEffect();
-    }
-}
-let movedCards = 0;
-const maxMoves = 17;
-function triggerBirthdayEffect() {
-  // Confetti Effect: Paper blast spreading all over the screen, moving upwards, then falling down
-  confetti({
-    particleCount: 3000, // More confetti for a bigger effect
-    spread: 4000,         // Wider spread for a larger blast across the screen
-    origin: { x: 0.5, y: 0.5 }, // Start from the center
-    scalar: 3,            // Increase size of confetti (paper pieces)
-    angle: 90,            // Shoot upwards
-    gravity: 0.6,         // Apply gravity for the confetti to fall
-    drift: 0,             // Keep particles centered horizontally
-    shapes: ['square', 'circle',], // Different shapes for paper-like pieces
-    colors: ['#FF0000', '#FFFF00', '#0000FF', '#00FF00', '#FF1493', '#FFA500', '#800080', '#FFFFFF', '#FFD700'], // Multiple colors for variation
-    startVelocity: 100,    // Fast initial speed for a strong burst
-    spread: 1000,         // More spread for the burst to cover the screen
-    ticks: 300,           // More ticks for the confetti to fall longer
-    zIndex: 9999,         // Put confetti on top of everything
-  });
-
-  // Create "Happy Birthday" Text
-  let text = document.createElement("div");
-  text.innerText = "🎉 Happy Birthday! 🎉";
-  text.style.position = "absolute";
-  text.style.top = "0%";
-  text.style.left = "50%";
-  text.style.transform = "translateX(-50%)";
-  text.style.fontSize = "4.5rem";
-  text.style.fontWeight = "bold";
-  text.style.color = "#FF4500";
-  text.style.zIndex = "9999";
-  text.style.animation = "fall 12s ease-in-out forwards"; // Animation for falling text
-  document.body.appendChild(text);
-
-  // Remove text after animation ends
-  setTimeout(() => {
-    text.remove();
-  }, 4000);  // Match the duration of the text fall
-
-  // Add CSS for the falling "Happy Birthday" text
-  const style = document.createElement("style");
-  style.innerHTML = `
-    @keyframes fall {
-      0% { top: 10%; opacity: 1; }
-      100% { top: 80%; opacity: 0; }
-    }
-  `;
-  document.head.appendChild(style);
-}
-// Modify existing card movement logic
-pictures.forEach((picture, index) => {
-  if (picture !== smoothCard) {
-    picture.addEventListener('mousedown', (event) => {
-      if (!picture.dataset.moved) {
-        picture.dataset.moved = "true";
-        movedCards++;
-        checkBirthdayEffect();
+    window.onload = function() {
+      const video = document.querySelector('#smooth-card video');
+      if(video) {
+        video.muted = true;
+        video.play().catch(() => {
+            video.muted = true;
+            video.play();
+        });
+        video.playbackRate = 1; 
       }
-      startDragSmooth(picture, event);
-    });
+    };
 
-    picture.addEventListener('touchstart', (event) => {
-      if (!picture.dataset.moved) {
-        picture.dataset.moved = "true";
-        movedCards++;
-        checkBirthdayEffect();
+    function checkBirthdayEffect() {
+        if (movedCards >= maxMoves) {
+            triggerBirthdayEffect();
+        }
+    }
+    let movedCards = 0;
+    const maxMoves = 20;
+    
+    function triggerBirthdayEffect() {
+      confetti({
+        particleCount: 3000, 
+        spread: 4000,         
+        origin: { x: 0.5, y: 0.5 }, 
+        scalar: 3,            
+        angle: 90,            
+        gravity: 0.6,         
+        drift: 0,             
+        shapes: ['square', 'circle',], 
+        colors: ['#FF0000', '#FFFF00', '#0000FF', '#00FF00', '#FF1493', '#FFA500', '#800080', '#FFFFFF', '#FFD700'], 
+        startVelocity: 100,    
+        spread: 1000,         
+        ticks: 300,           
+        zIndex: 9999,         
+      });
+
+      let text = document.createElement("div");
+      text.innerText = " Happy Birthday!💗 ";
+      text.style.position = "absolute";
+      text.style.top = "0%";
+      text.style.left = "50%";
+      text.style.transform = "translateX(-50%)";
+      // Responsive text size
+      text.style.fontSize = window.innerWidth <= 768 ? "3rem" : "4.5rem";
+      text.style.fontWeight = "bold";
+      text.style.color = "#FF4500";
+      text.style.zIndex = "9999";
+      text.style.animation = "fall 12s ease-in-out forwards"; 
+      document.body.appendChild(text);
+
+      setTimeout(() => {
+        text.remove();
+      }, 4000);  
+
+      const style = document.createElement("style");
+      style.innerHTML = `
+        @keyframes fall {
+          0% { top: 10%; opacity: 1; }
+          100% { top: 80%; opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    pictures.forEach((picture, index) => {
+      if (picture !== smoothCard) {
+        picture.addEventListener('mousedown', (event) => {
+          if (!picture.dataset.moved) {
+            picture.dataset.moved = "true";
+            movedCards++;
+            checkBirthdayEffect();
+          }
+          startDragSmooth(picture, event);
+        });
+
+        picture.addEventListener('touchstart', (event) => {
+          if (!picture.dataset.moved) {
+            picture.dataset.moved = "true";
+            movedCards++;
+            checkBirthdayEffect();
+          }
+          previousTouch = event.touches[0];
+          startDragSmooth(picture, event);
+        }, { passive: false });
       }
-      previousTouch = event.touches[0];
-      startDragSmooth(picture, event);
     });
-  }
-});
   </script>
 </body>
-          </html>
+</html>
